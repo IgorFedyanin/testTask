@@ -1,5 +1,7 @@
 package com.game.entity;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -21,6 +23,31 @@ public class Player {
     private Integer untilNextLevel;
     private Date birthday;
     private Boolean banned;
+
+    public Player(String name, String title, Race race, Profession profession, Date birthday, Boolean banned, Integer experience) {
+        this.name = name;
+        this.title = title;
+        this.race = race;
+        this.profession = profession;
+        this.experience = experience;
+        this.birthday = birthday;
+        this.level = computeLevel(experience);
+        this.untilNextLevel = computeUntilNextLevel(level, this.experience);
+        if (banned == null) this.banned = false;
+        else this.banned = banned;
+    }
+
+    public Player() {
+
+    }
+
+    public Integer computeUntilNextLevel(Integer level, Integer experience) {
+        return 50 * (level + 1) * (level + 2) - experience;
+    }
+
+    public Integer computeLevel(Integer exp){
+        return (int) (Math.sqrt(2500 + 200 * exp) - 50) / 100;
+    }
 
     public Long getId() {
         return id;
